@@ -19,7 +19,6 @@ import dao.UserAWSS3RequestDao;
 import dao.UserDao;
 import dao.UserDeploymentRequestDao;
 import entity.User;
-import entity.UserGCPDBRequest;
 import entity.aws.UserAWSComputeResponse;
 import entity.aws.UserAWSDBRequest;
 import entity.aws.UserAWSDeploymentRequest;
