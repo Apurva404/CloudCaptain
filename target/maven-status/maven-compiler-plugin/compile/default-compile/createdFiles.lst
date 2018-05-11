@@ -1,0 +1,13 @@
+entity/MasterProject.class
+rest/AWSResourceCreationRESTClient.class
+rest/TestClient.class
+table/UserTable.class
+entity/User.class
+constants/EntityConstants.class
+constants/DBConstants.class
+rest/MasterProjectService.class
+util/JSONUtil.class
+db/DBManager.class
+dao/UserDao.class
+dao/MasterProjectDao.class
+table/MasterProjectTable.class
