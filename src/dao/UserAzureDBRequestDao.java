@@ -7,11 +7,11 @@ import java.sql.Timestamp;
 
 import constants.EntityConstants;
 import db.DBManager;
-import entity.gcp.UserGCPDBRequest;
-import table.UserGCPDBRequestTable;
+import entity.azure.UserAzureDBRequest;
+import table.UserAzureDBRequestTable;
 
-public class UserGCPDBRequestDao {
-	public static int insert( UserGCPDBRequest newDBRequest) {
+public class UserAzureDBRequestDao {
+	public static int insert( UserAzureDBRequest newDBRequest) {
 		int lastInsertedRequestId = EntityConstants.INVALID_ID;
 		DBManager manager = DBManager.get();
 		if(manager != null) {
@@ -20,7 +20,7 @@ public class UserGCPDBRequestDao {
 				try {
 					int rowsUpdated = statement.executeUpdate(generateSQLForInsert(newDBRequest));
 					if(rowsUpdated > 0) {
-						ResultSet rs = statement.executeQuery("SELECT MAX(" + UserGCPDBRequestTable.REQUEST_ID.getColumnName() + ") FROM " + UserGCPDBRequestTable.getTableName() + ";");
+						ResultSet rs = statement.executeQuery("SELECT MAX(" + UserAzureDBRequestTable.REQUEST_ID.getColumnName() + ") FROM " + UserAzureDBRequestTable.getTableName() + ";");
 						while(rs.next()) {
 							lastInsertedRequestId = rs.getInt(1);							
 						}
@@ -36,17 +36,17 @@ public class UserGCPDBRequestDao {
 	}
 	
 
-	private static String generateSQLForInsert(UserGCPDBRequest newDBRequest) {
+	private static String generateSQLForInsert(UserAzureDBRequest newDBRequest) {
 		StringBuilder sql = new StringBuilder("insert into ");
-		sql.append(UserGCPDBRequestTable.getTableName());
+		sql.append(UserAzureDBRequestTable.getTableName());
 		sql.append(" (");
-		sql.append(UserGCPDBRequestTable.USER_ID.getColumnName() + ",");
-		sql.append(UserGCPDBRequestTable.REQUEST_TIME.getColumnName() + ",");
-		sql.append(UserGCPDBRequestTable.DB_TYPE.getColumnName() + ",");
-		sql.append(UserGCPDBRequestTable.DB_INSTANCE_NAME.getColumnName() + ",");
-		sql.append(UserGCPDBRequestTable.ROOT_USERNAME.getColumnName() + ",");
-		sql.append(UserGCPDBRequestTable.ROOT_PASSWORD.getColumnName()+ ",");
-		sql.append(UserGCPDBRequestTable.DEPLOYEMENT_ID.getColumnName());
+		sql.append(UserAzureDBRequestTable.USER_ID.getColumnName() + ",");
+		sql.append(UserAzureDBRequestTable.REQUEST_TIME.getColumnName() + ",");
+		sql.append(UserAzureDBRequestTable.DB_TYPE.getColumnName() + ",");
+		sql.append(UserAzureDBRequestTable.DB_INSTANCE_NAME.getColumnName() + ",");
+		sql.append(UserAzureDBRequestTable.ROOT_USERNAME.getColumnName() + ",");
+		sql.append(UserAzureDBRequestTable.ROOT_PASSWORD.getColumnName()+ ",");
+		sql.append(UserAzureDBRequestTable.DEPLOYEMENT_ID.getColumnName());
 		sql.append(") values (");
 		sql.append("'" + newDBRequest.getUserId() + "'");
 		sql.append(",");
@@ -65,4 +65,5 @@ public class UserGCPDBRequestDao {
 		System.out.println(sql.toString());
 		return sql.toString();
 	}
+
 }

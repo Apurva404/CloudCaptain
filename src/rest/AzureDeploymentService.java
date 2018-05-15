@@ -1,4 +1,4 @@
-  package rest;
+package rest;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -8,20 +8,21 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import constants.EntityConstants;
-import dao.UserGCPComputeRequestDao;
-import dao.UserGCPDBRequestDao;
-import entity.gcp.UserGCPComputeRequest;
-import entity.gcp.UserGCPComputeResponse;
-import entity.gcp.UserGCPDBRequest;
-import entity.gcp.UserGCPDBResponse;
+import dao.UserAzureComputeRequestDao;
+import dao.UserAzureDBRequestDao;
+import entity.azure.UserAzureComputeRequest;
+import entity.azure.UserAzureComputeResponse;
+import entity.azure.UserAzureDBRequest;
+import entity.azure.UserAzureDBResponse;
 import util.JSONUtil;
 
-@Path("deployGCP")
-public class GCPDeploymentService {
+@Path("deployAzure")
+public class AzureDeploymentService {
 	@POST
 	@Consumes("application/json")
 	@Path("/Compute")
@@ -33,47 +34,48 @@ public class GCPDeploymentService {
 		String requestDateTimeString;
 		final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 		Date requestDate = new Date(0);
-		String cloudType, instanceName, instanceType, warFileLink, deploymentName;
+		String cloudType, instanceName, instanceType, s3FileLink, deploymentName, imageType;
 		requestId = EntityConstants.INVALID_ID;
-		cloudType = instanceName = instanceType  = warFileLink = deploymentName ="";
+		cloudType = instanceName = instanceType  = s3FileLink = deploymentName = imageType ="";
 		JSONObject json;
 		JSONObject responseBody = new JSONObject();
-		UserGCPComputeResponse newComputeResponse = null;
+		UserAzureComputeResponse newComputeResponse = null;
 
 		try {
 			System.out.println(msg);
 			;
 			json = new JSONObject(msg);
-			userId = json.getInt("userId");
+			userId = json.getInt("UserId");
 			requestDateTimeString = json.getString("DateTime");
 			requestDate = sdf.parse(requestDateTimeString);
 			cloudType = json.getString("CloudType");
 			instanceName = json.getString("InstanceName");
 			instanceType = json.getString("InstanceType");
-			warFileLink = json.getString("warFileLink");
+			s3FileLink = json.getString("S3Link");
 			deploymentName = json.getString("DeploymentName");
-
+			imageType = json.getString("ImageType");
+			
 		} catch (JSONException e) {
 			e.printStackTrace();
 			// return Response.status(400).entity("{\"string\":\"JSON parsing
 			// failed.\"}").build();
 			return Response.status(400).entity("{\"string\":\"JSON parsing failed.\"}").build();
 		}
-		if (cloudType.equalsIgnoreCase("GCP")) {
+		if (cloudType.equalsIgnoreCase("AZURE")) {
 			// Creating a new record in request for the user request of AWS
 			// compute resource
-			UserGCPComputeRequest newComputeRequest = new UserGCPComputeRequest(userId, requestDate, instanceName,
-					instanceType,warFileLink,deploymentName);
+			UserAzureComputeRequest newComputeRequest = new UserAzureComputeRequest(userId, requestDate, instanceName,
+					instanceType,s3FileLink,deploymentName, imageType);
 			System.out.println(newComputeRequest.getRequestId() + "," + newComputeRequest.getUserId() + ","
 					+ newComputeRequest.getRequestTime() + "," + newComputeRequest.getInstanceName() + ","
-					+ newComputeRequest.getInstanceType()  + ","+  newComputeRequest.getWarFileLink() + ","+ newComputeRequest.getDeploymentName());
+					+ newComputeRequest.getInstanceType()  + ","+  newComputeRequest.getS3Link() + ","+ newComputeRequest.getDeploymentName());
 			// call GCPComputeRequestDao to insert a record of request in DB
-			requestId = UserGCPComputeRequestDao.insert(newComputeRequest);
-			// calling the GCP Compute creation api
-			GCPComputeCreationRESTClient GCPComputeCreationClient = new GCPComputeCreationRESTClient();
-			newComputeResponse = GCPComputeCreationClient.ClientGetCall(userId,instanceName, instanceType, warFileLink, requestId);
+			requestId = UserAzureComputeRequestDao.insert(newComputeRequest);
+			// calling the Azure Compute creation api
+			AzureComputeCreationRESTClient azureComputeCreationClient = new AzureComputeCreationRESTClient();
+			newComputeResponse = azureComputeCreationClient.ClientGetCall(userId,instanceName, instanceType,imageType, s3FileLink, requestId);
 			if (newComputeResponse != null) 			
-					responseBody=JSONUtil.GCPComputeResponseToJSON(newComputeResponse);
+					responseBody=JSONUtil.AzureComputeResponseToJSON(newComputeResponse);
 		}
 		if (requestId != EntityConstants.INVALID_ID && newComputeResponse != null ) {
 			return Response.ok(responseBody.toString()).build();
@@ -103,7 +105,7 @@ public class GCPDeploymentService {
 		dbType = dbInstanceName = masterUsername  = masterPassword = deploymentName ="";
 		JSONObject json;
 		JSONObject responseBody = new JSONObject();
-		UserGCPDBResponse newDBResponse = null;
+		UserAzureDBResponse newDBResponse = null;
 
 		try {
 			System.out.println(msg);
@@ -126,18 +128,18 @@ public class GCPDeploymentService {
 		}
 			// Creating a new record in request for the user request of AWS
 			// compute resource
-			UserGCPDBRequest newDBRequest = new UserGCPDBRequest(userId, requestDate, dbType,
+			UserAzureDBRequest newDBRequest = new UserAzureDBRequest(userId, requestDate, dbType,
 					dbInstanceName,masterUsername, masterPassword,deploymentName);
 			System.out.println(newDBRequest.getRequestId() + "," + newDBRequest.getUserId() + ","
 					+ newDBRequest.getRequestTime() + "," + newDBRequest.getDBInstanceName() + ","
 					+ newDBRequest.getMasterUsername()  + ","+  newDBRequest.getMasterPassword() + ","+ newDBRequest.getDeploymentName());
 			// call GCPComputeRequestDao to insert a record of request in DB
-			requestId = UserGCPDBRequestDao.insert(newDBRequest);
+			requestId = UserAzureDBRequestDao.insert(newDBRequest);
 			// calling the GCP Compute creation api
-			GCPDBCreationRESTClient GCPDBCreationClient = new GCPDBCreationRESTClient();
-			newDBResponse = GCPDBCreationClient.ClientGetCall(userId,requestId, dbInstanceName, masterUsername, masterPassword, dbType);
+			AzureDBCreationRESTClient azureDBCreationClient = new AzureDBCreationRESTClient();
+			newDBResponse = azureDBCreationClient.ClientGetCall(userId,requestId, dbInstanceName, masterUsername, masterPassword, dbType);
 			if (newDBResponse != null) 			
-					responseBody=JSONUtil.GCPDBResponseToJSON(newDBResponse);
+					responseBody=JSONUtil.AzureDBResponseToJSON(newDBResponse);
 		if (requestId != EntityConstants.INVALID_ID && newDBResponse != null ) {
 			return Response.ok(responseBody.toString()).build();
 		} else {
@@ -149,4 +151,5 @@ public class GCPDeploymentService {
 					.header("Access-Control-Allow-Headers", "*").build();
 		}
 	}
+
 }

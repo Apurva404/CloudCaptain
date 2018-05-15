@@ -32,6 +32,7 @@ public class AWSResourceCreationRESTClient {
 		String output = null;
 		String instanceDNS = null;
 		String instanceIP = null;
+		String instanceId = null;
 		String instanceState = null;
 		String instanceLaunchTime = null;
 
@@ -67,8 +68,9 @@ public class AWSResourceCreationRESTClient {
 					instanceIP = newObject.getString("instanceIP");
 					instanceState = newObject.getString("instanceState");
 					instanceLaunchTime = newObject.getString("instanceLaunchTime");
+					instanceId = newObject.getString("instanceID");
 					UserAWSComputeResponse newComputeResponse = new UserAWSComputeResponse(requestId, userId,
-							instanceDNS, instanceState, instanceLaunchTime, instanceIP);
+							instanceDNS, instanceState, instanceLaunchTime, instanceIP, instanceId);
 					newComputeResponse.setLoadbalancer(newLoadBalancer);
 					UserAWSComputeResponseDao.insert(newComputeResponse);
 					myList.add(newComputeResponse);
@@ -79,7 +81,7 @@ public class AWSResourceCreationRESTClient {
 		} catch (Exception e) {
 			System.out.println(e);
 		}
-		System.out.println("Instance details are:" + instanceDNS + instanceIP + instanceState + instanceLaunchTime);
+		System.out.println("Instance details are:" + instanceDNS + instanceIP + instanceState + instanceLaunchTime + instanceId);
 		return myList;
 	}
 

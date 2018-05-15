@@ -16,13 +16,21 @@ import constants.EntityConstants;
 import dao.UserAWSComputeResponseDao;
 import dao.UserAWSDBRequestDao;
 import dao.UserAWSS3RequestDao;
+import dao.UserAzureComputeResponseDao;
+import dao.UserAzureDBResponseDao;
 import dao.UserDao;
 import dao.UserDeploymentRequestDao;
+import dao.UserGCPComputeResponseDao;
+import dao.UserGCPDBResponseDao;
 import entity.User;
 import entity.aws.UserAWSComputeResponse;
 import entity.aws.UserAWSDBRequest;
 import entity.aws.UserAWSDeploymentRequest;
 import entity.aws.UserAWSS3Request;
+import entity.azure.UserAzureComputeResponse;
+import entity.azure.UserAzureDBResponse;
+import entity.gcp.UserGCPComputeResponse;
+import entity.gcp.UserGCPDBResponse;
 import util.JSONUtil;
 
 @Path("user")
@@ -174,6 +182,70 @@ public class UserService {
 	
 	@GET
 	@Produces("application/json")
+	@Path("GCPComputeDetails/{user_id}/{deployment_name}")
+	public Response getAssociatedGCPInstances(@PathParam("user_id") int User_Id, @PathParam("deployment_name") String deploymentName) {
+		ArrayList<UserGCPComputeResponse> gcpComputeInstanceList = UserGCPComputeResponseDao.getUserGCPInstnaceDetails(User_Id, deploymentName);
+		JSONArray responseBody = new JSONArray();
+		for(UserGCPComputeResponse item: gcpComputeInstanceList) {
+			responseBody.put(JSONUtil.userGCPComputeDetailsToJSON(item));
+		}
+		return Response.ok(responseBody.toString()).build();
+	}
+	
+	@GET
+	@Produces("application/json")
+	@Path("GCPDBDetails/{user_id}/{deploymentName}")
+	public Response getAssociatedGCPDBInstances(@PathParam("user_id") int User_Id, @PathParam("deploymentName") String deploymentName) {
+		ArrayList<UserGCPDBResponse> gcpDBInstanceList = UserGCPDBResponseDao.getUserGcpDBDetails(User_Id, deploymentName);
+		JSONArray responseBody = new JSONArray();
+		for(UserGCPDBResponse item: gcpDBInstanceList) {
+			responseBody.put(JSONUtil.userGCPDBRequestDetailsToJSON(item));
+		}
+		return Response.ok(responseBody.toString()).build();
+	}
+	
+	@GET
+	@Produces("application/json")
+	@Path("AzureComputeDetails/{user_id}/{deployment_name}")
+	public Response getAssociatedAzureInstances(@PathParam("user_id") int User_Id, @PathParam("deployment_name") String deploymentName) {
+		ArrayList<UserAzureComputeResponse> azureComputeInstanceList = UserAzureComputeResponseDao.getUserAzureInstnaceDetails(User_Id, deploymentName);
+		JSONArray responseBody = new JSONArray();
+		for(UserAzureComputeResponse item: azureComputeInstanceList) {
+			responseBody.put(JSONUtil.userAzureomputeDetailsToJSON(item));
+		}
+		return Response.ok(responseBody.toString()).build();
+	}
+	
+	@GET
+	@Produces("application/json")
+	@Path("AzureDBDetails/{user_id}/{deploymentName}")
+	public Response getAssociatedAzureDBInstances(@PathParam("user_id") int User_Id, @PathParam("deploymentName") String deploymentName) {
+		ArrayList<UserAzureDBResponse> azureDBInstanceList = UserAzureDBResponseDao.getUserAzureDBDetails(User_Id, deploymentName);
+		JSONArray responseBody = new JSONArray();
+		for(UserAzureDBResponse item: azureDBInstanceList) {
+			responseBody.put(JSONUtil.userAzureDBRequestDetailsToJSON(item));
+		}
+		return Response.ok(responseBody.toString()).build();
+	}
+	
+//	@GET
+//	@Produces("application/json")
+//	@Path("DeploymentDetails/{user_id}/{deploymentName}")
+//	public Response getAssociatedDeploymentDetails(@PathParam("user_id") int User_Id, @PathParam("deploymentName") String deploymentName) {
+//		ArrayList<UserAWSDBRequest> rdsInstanceList = UserAWSDBRequestDao.getUserRDSDetails(User_Id, deploymentName);
+//		ArrayList<UserAWSComputeResponse> ec2InstanceList = UserAWSComputeResponseDao.getUserEc2Details(User_Id, deploymentName);
+//		ArrayList<UserAWSS3Request> S3BucketList = UserAWSS3RequestDao.getUserS3Details(User_Id, deploymentName);
+//		ArrayList<UserGCPDBResponse> gcpDBInstanceList = UserGCPDBResponseDao.getUserGcpDBDetails(User_Id, deploymentName);
+//		ArrayList<UserGCPComputeResponse> gcpComputeInstanceList = UserGCPComputeResponseDao.getUserGCPInstnaceDetails(User_Id, deploymentName);
+//		
+//		JSONArray responseBody = new JSONArray();
+//		for(UserGCPDBResponse item: gcpDBInstanceList) {
+//			responseBody.put(JSONUtil.userGCPDBRequestDetailsToJSON(item));
+//		}
+//		return Response.ok(responseBody.toString()).build();
+//	}
+	@GET
+	@Produces("application/json")
 	@Path("Deployments/{user_id}")
 	public Response getAssociatedDeploymentName(@PathParam("user_id") int User_Id) {
 		ArrayList<UserAWSDeploymentRequest> deploymentList = UserDeploymentRequestDao.getUserDeploymentName(User_Id);
@@ -182,20 +254,7 @@ public class UserService {
 			responseBody.put(JSONUtil.userDeploymentNameToJSON(item));
 		}
 		return Response.ok(responseBody.toString()).build();
-	}
-	
-//	@GET
-//	@Produces("application/json")
-//	@Path("GCPDBDetails/{user_id}/{deploymentName}")
-//	public Response getAssociatedGCPDBInstances(@PathParam("user_id") int User_Id, @PathParam("deploymentName") String deploymentName) {
-//		ArrayList<UserGCPDBRequest> gcpDBInstanceList = UserGCPDBRequestDao.getUserRDSDetails(User_Id, deploymentName);
-//		JSONArray responseBody = new JSONArray();
-//		for(UserAWSDBRequest item: gcpDBInstanceList) {
-//			responseBody.put(JSONUtil.userGCPDBRequestDetailsToJSON(item));
-//		}
-//		return Response.ok(responseBody.toString()).build();
-//	}
-	
+	}	
 }
 
 	

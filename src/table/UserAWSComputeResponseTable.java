@@ -7,7 +7,8 @@ public enum UserAWSComputeResponseTable {
 	INSTANCE_DNS(3,"InstanceDNS","varchar(500)"),
 	INSTANCE_STATE(2,"InstanceState","varchar(500)"),
 	INSTANCE_LAUNCH_TIME(4,"instanceLaunchTime","varchar(500)"),
-	INSTANCE_IP(5,"InstanceIP","varchar(255)");
+	INSTANCE_IP(5,"InstanceIP","varchar(255)"),
+	INSTANCE_ID(5,"InstanceId","varchar(255)");
 	
 	private int columnIndex;
 	private String columnName;

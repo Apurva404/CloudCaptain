@@ -1,10 +1,10 @@
-package entity;
+package entity.azure;
 
 import java.util.Date;
 
 import constants.EntityConstants;
 
-public class UserGCPDBRequest {
+public class UserAzureDBRequest {
 	private int requestId;
 	private int userId;
 	private Date  requestTime;
@@ -14,7 +14,7 @@ public class UserGCPDBRequest {
 	private String masterPassword;
 	private String deploymentName;
 	
-	public UserGCPDBRequest(int userIdIn,Date requestTimeIn,String dbTypeIn, String dbInstanceNameIn, String masterUsernameIn, String masterPasswordIn, String deploymentNameIn){
+	public UserAzureDBRequest(int userIdIn,Date requestTimeIn,String dbTypeIn, String dbInstanceNameIn, String masterUsernameIn, String masterPasswordIn, String deploymentNameIn){
 		requestId = EntityConstants.INVALID_ID;
 		userId = userIdIn;
 		requestTime = requestTimeIn;
@@ -25,7 +25,7 @@ public class UserGCPDBRequest {
 		deploymentName = deploymentNameIn;
 	}
 	
-	public UserGCPDBRequest(int requestIdIn,int userIdIn,Date requestTimeIn,String dbTypeIn, String dbInstanceNameIn, String masterUsernameIn, String masterPasswordIn, String deploymentNameIn){
+	public UserAzureDBRequest(int requestIdIn,int userIdIn,Date requestTimeIn,String dbTypeIn, String dbInstanceNameIn, String masterUsernameIn, String masterPasswordIn, String deploymentNameIn){
 		requestId = requestIdIn;
 		userId = userIdIn;
 		requestTime = requestTimeIn;
@@ -44,5 +44,5 @@ public class UserGCPDBRequest {
 	public String getMasterUsername() { return masterUsername; }
 	public String getMasterPassword() { return masterPassword; }
 	public String getDeploymentName() { return deploymentName; }
-}
 
+}

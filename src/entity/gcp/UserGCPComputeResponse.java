@@ -1,20 +1,20 @@
-package entity;
+package entity.gcp;
 
 import constants.EntityConstants;
 
-public class UserGCPDBResponse {
+public class UserGCPComputeResponse {
 	private int responseId;
 	private int requestId;
 	private int userId;
 	private String instanceEndpoint;
 	
-	public UserGCPDBResponse(int requestIdIn, int userIdIn, String instanceEndpointIn){
+	public UserGCPComputeResponse(int requestIdIn, int userIdIn, String instanceEndpointIn){
 		responseId = EntityConstants.INVALID_ID;
 		userId = userIdIn;
 		requestId = requestIdIn;
 		instanceEndpoint = instanceEndpointIn;
 	}
-	public UserGCPDBResponse(int responseIdIn,int requestIdIn, int userIdIn, String instanceEndpointIn){
+	public UserGCPComputeResponse(int responseIdIn,int requestIdIn, int userIdIn, String instanceEndpointIn){
 		responseId = responseIdIn;
 		requestId = requestIdIn;
 		userId = userIdIn;
@@ -24,5 +24,4 @@ public class UserGCPDBResponse {
 	public int getRequestId() { return requestId; }
 	public int getUserId() { return userId; }
 	public String getInstanceEndpoint() { return instanceEndpoint; }
-
 }

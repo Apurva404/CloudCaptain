@@ -11,9 +11,9 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONObject;
 import dao.UserGCPDBResponseDao;
-import entity.UserGCPDBResponse;
+import entity.gcp.UserGCPDBResponse;
 
-public class GCPDBCreationClient {
+public class GCPDBCreationRESTClient {
 	public UserGCPDBResponse ClientGetCall(int userId,int requestId, String dbInstanceName, String masterUsername, String masterPassword, String dbType) throws Exception {
 		URI uri = new URI("http", "//34.217.134.45:8080/CloudCaptain/GoogleDB/create/" + userId + "/" + requestId + "/"
 				+ dbInstanceName + "/" + masterUsername   + "/" + masterPassword + "/" + dbType, null);

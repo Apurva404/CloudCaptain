@@ -10,9 +10,10 @@ public class UserAWSComputeResponse {
 	private String instanceState;
 	private String instanceLaunchTime;
 	private String instanceIP;
+	private String instanceID;
 	private UserAWSComputeLoadBalancerDetails loadbalancer;
 	
-	public UserAWSComputeResponse(int requestIdIn, int userIdIn,String instanceDNSIn, String instanceStateIn,String instancelaunchTimeIn, String instanceIPIn){
+	public UserAWSComputeResponse(int requestIdIn, int userIdIn,String instanceDNSIn, String instanceStateIn,String instancelaunchTimeIn, String instanceIPIn, String instanceIDIn){
 		responseId = EntityConstants.INVALID_ID;
 		requestId = requestIdIn;
 		userId = userIdIn;
@@ -20,10 +21,11 @@ public class UserAWSComputeResponse {
 		instanceState = instanceStateIn;
 		instanceLaunchTime = instancelaunchTimeIn;
 		instanceIP = instanceIPIn;
+		instanceID = instanceIDIn;
 		loadbalancer = null;
 	}
 	
-	public UserAWSComputeResponse(int requestIdIn, int userIdIn,String instanceDNSIn, String instanceStateIn,String instancelaunchTimeIn, String instanceIPIn,UserAWSComputeLoadBalancerDetails lbIn ){
+	public UserAWSComputeResponse(int requestIdIn, int userIdIn,String instanceDNSIn, String instanceStateIn,String instancelaunchTimeIn, String instanceIPIn,String instanceIdIn ,UserAWSComputeLoadBalancerDetails lbIn){
 		responseId = EntityConstants.INVALID_ID;
 		requestId = requestIdIn;
 		userId = userIdIn;
@@ -31,6 +33,7 @@ public class UserAWSComputeResponse {
 		instanceState = instanceStateIn;
 		instanceLaunchTime = instancelaunchTimeIn;
 		instanceIP = instanceIPIn;
+		instanceID = instanceIdIn;
 		loadbalancer = lbIn;
 	}
 	
@@ -41,6 +44,7 @@ public class UserAWSComputeResponse {
 	public String getInstanceState() { return instanceState; }
 	public String getInstanceLaunchTime() { return instanceLaunchTime; }
 	public String getInstanceIP() { return instanceIP; }
+	public String getInstanceID() { return instanceID; }
 	public UserAWSComputeLoadBalancerDetails getLoadbalancer() { return loadbalancer; }
 	public void setLoadbalancer(UserAWSComputeLoadBalancerDetails lb) { loadbalancer=lb; }
 } 

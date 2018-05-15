@@ -4,26 +4,27 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONObject;
 
-import dao.UserGCPComputeResponseDao;
-import entity.gcp.UserGCPComputeResponse;
+import dao.UserAzureComputeResponseDao;
+import entity.azure.UserAzureComputeResponse;
 
-public class GCPComputeCreationRESTClient {
-	public UserGCPComputeResponse ClientGetCall(int userId, String instanceName, String instanceType, String warFileLink, int requestId) throws Exception {
-		URI uri = new URI("http", "//34.217.134.45:8080/CloudCaptain/GoogleCompute/create/" + userId + "/" + requestId + "/"
-				+ instanceName + "/" + instanceType  + "/" + warFileLink , null);
+public class AzureComputeCreationRESTClient {
+	public UserAzureComputeResponse ClientGetCall(int userId, String instanceName, String instanceType,String imageType, String s3Link, int requestId) throws Exception {
+		URI uri = new URI("http", "//34.217.134.45:8080/CloudCaptain/MicrosoftCompute/create/" + userId + "/" + requestId + "/"
+				+ instanceName + "/" + instanceType + "/" + imageType + "/" + s3Link , null);
 
 		URL url = uri.toURL();
 		String Url = url.toString();
 		System.out.println(Url);
 		String output = null;
 		String instanceEndpoint = null; 
-		UserGCPComputeResponse newGCPResponse = null;
+		UserAzureComputeResponse newAzureResponse = null;
 
 		HttpGet get = new HttpGet(Url);
 		try {
@@ -40,14 +41,15 @@ public class GCPComputeCreationRESTClient {
 				JSONObject newObject = new JSONObject(output);
 				System.out.println(newObject);;
 				instanceEndpoint = newObject.getString("instanceIP");
-				newGCPResponse = new UserGCPComputeResponse(requestId, userId,instanceEndpoint);
-				UserGCPComputeResponseDao.insert(newGCPResponse);	
+				newAzureResponse = new UserAzureComputeResponse(requestId, userId,instanceEndpoint);
+				UserAzureComputeResponseDao.insert(newAzureResponse);	
 			}
 			httpClient_load.getConnectionManager().shutdown();
 		} catch (Exception e) {
 			System.out.println(e);
 		}
 		System.out.println("Instance details are:" + instanceEndpoint);
-		return newGCPResponse;
+		return newAzureResponse;
 	}
+
 }

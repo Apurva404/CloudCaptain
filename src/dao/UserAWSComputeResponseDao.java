@@ -82,10 +82,11 @@ public class UserAWSComputeResponseDao {
 						String instanceState = rs.getString(UserAWSComputeResponseTable.INSTANCE_STATE.getColumnName());
 						String instanceLaunchTime = rs.getString(UserAWSComputeResponseTable.INSTANCE_LAUNCH_TIME.getColumnName());
 						String instanceIP = rs.getString(UserAWSComputeResponseTable.INSTANCE_IP.getColumnName());
+						String instanceID = rs.getString(UserAWSComputeResponseTable.INSTANCE_ID.getColumnName());
 						String elbIdentifier = rs.getString(UserAWSComputeLoadBalancerDetailsTable.ELB_IDENTIFIER.getColumnName());
 						String elbEndpoint = rs.getString(UserAWSComputeLoadBalancerDetailsTable.ELB_ENDPOINT.getColumnName());
 						UserAWSComputeLoadBalancerDetails lbItem = new UserAWSComputeLoadBalancerDetails(elbIdentifier,elbEndpoint,requestId);
-						UserAWSComputeResponse item = new  UserAWSComputeResponse(requestId,userId,instanceDNS,instanceState,instanceLaunchTime,instanceIP, lbItem);
+						UserAWSComputeResponse item = new  UserAWSComputeResponse(requestId,userId,instanceDNS,instanceState,instanceLaunchTime,instanceIP,instanceID, lbItem);
 						ec2ResponseFromDBList.add(item);
 					}
 				} catch (SQLException e) {
@@ -99,7 +100,7 @@ public class UserAWSComputeResponseDao {
 	}
 
 	private static String generateSQLForSelectUserEC2Details(int userId, String deploymentName) {
-		StringBuilder sql = new StringBuilder("SELECT A.UserId,A.RequestId,A.InstanceDNS,A.InstanceState, A.instanceLaunchTime, A.InstanceIP,B.ELBEndpoint,B.ELBIdentifier FROM ");
+		StringBuilder sql = new StringBuilder("SELECT A.UserId,A.RequestId,A.InstanceDNS,A.InstanceState, A.instanceLaunchTime, A.InstanceIP,A.InstanceID,B.ELBEndpoint,B.ELBIdentifier FROM ");
 		sql.append(UserAWSComputeResponseTable.getTableName() + " A LEFT JOIN ");
 		sql.append(UserAWSComputeLoadBalancerDetailsTable.getTableName() + " B ON A.RequestId = B.RequestId");
 		sql.append(" WHERE  A.RequestId IN");

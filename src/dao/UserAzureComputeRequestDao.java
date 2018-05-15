@@ -7,11 +7,11 @@ import java.sql.Timestamp;
 
 import constants.EntityConstants;
 import db.DBManager;
-import entity.gcp.UserGCPComputeRequest;
-import table.UserGCPComputeRequestTable;
+import entity.azure.UserAzureComputeRequest;
+import table.UserAzureComputeRequestTable;
 
-public class UserGCPComputeRequestDao {
-	public static int insert( UserGCPComputeRequest newComputeRequest) {
+public class UserAzureComputeRequestDao {
+	public static int insert( UserAzureComputeRequest newComputeRequest) {
 		int lastInsertedRequestId = EntityConstants.INVALID_ID;
 		DBManager manager = DBManager.get();
 		if(manager != null) {
@@ -20,7 +20,7 @@ public class UserGCPComputeRequestDao {
 				try {
 					int rowsUpdated = statement.executeUpdate(generateSQLForInsert(newComputeRequest));
 					if(rowsUpdated > 0) {
-						ResultSet rs = statement.executeQuery("SELECT MAX(" + UserGCPComputeRequestTable.REQUEST_ID.getColumnName() + ") FROM " + UserGCPComputeRequestTable.getTableName() + ";");
+						ResultSet rs = statement.executeQuery("SELECT MAX(" + UserAzureComputeRequestTable.REQUEST_ID.getColumnName() + ") FROM " + UserAzureComputeRequestTable.getTableName() + ";");
 						while(rs.next()) {
 							lastInsertedRequestId = rs.getInt(1);							
 						}
@@ -36,16 +36,17 @@ public class UserGCPComputeRequestDao {
 	}
 	
 
-	private static String generateSQLForInsert(UserGCPComputeRequest newComputeRequest) {
+	private static String generateSQLForInsert(UserAzureComputeRequest newComputeRequest) {
 		StringBuilder sql = new StringBuilder("insert into ");
-		sql.append(UserGCPComputeRequestTable.getTableName());
+		sql.append(UserAzureComputeRequestTable.getTableName());
 		sql.append(" (");
-		sql.append(UserGCPComputeRequestTable.USER_ID.getColumnName() + ",");
-		sql.append(UserGCPComputeRequestTable.REQUEST_TIME.getColumnName() + ",");
-		sql.append(UserGCPComputeRequestTable.INSTANCE_NAME.getColumnName() + ",");
-		sql.append(UserGCPComputeRequestTable.INSTANCE_TYPE.getColumnName() + ",");
-		sql.append(UserGCPComputeRequestTable.WARFILE_LINK.getColumnName() + ",");
-		sql.append(UserGCPComputeRequestTable.DEPLOYMENT_ID.getColumnName());
+		sql.append(UserAzureComputeRequestTable.USER_ID.getColumnName() + ",");
+		sql.append(UserAzureComputeRequestTable.REQUEST_TIME.getColumnName() + ",");
+		sql.append(UserAzureComputeRequestTable.INSTANCE_NAME.getColumnName() + ",");
+		sql.append(UserAzureComputeRequestTable.INSTANCE_TYPE.getColumnName() + ",");
+		sql.append(UserAzureComputeRequestTable.S3_LINK.getColumnName() + ",");
+		sql.append(UserAzureComputeRequestTable.DEPLOYMENT_ID.getColumnName() + ",");
+		sql.append(UserAzureComputeRequestTable.IMAGE_TYPE.getColumnName());
 		sql.append(") values (");
 		sql.append("'" + newComputeRequest.getUserId() + "'");
 		sql.append(",");
@@ -55,14 +56,14 @@ public class UserGCPComputeRequestDao {
 		sql.append(",");
 		sql.append("'" + newComputeRequest.getInstanceType() + "'");
 		sql.append(",");
-		sql.append("'" + newComputeRequest.getwarFileLink() + "'");
+		sql.append("'" + newComputeRequest.getS3Link() + "'");
 		sql.append(",");
 		sql.append("'" + newComputeRequest.getDeploymentName() + "'");
+		sql.append(",");
+		sql.append("'" + newComputeRequest.getImageType() + "'");
 		sql.append(");");
 		System.out.println(sql.toString());
 		return sql.toString();
 	}
-	
-
 
 }

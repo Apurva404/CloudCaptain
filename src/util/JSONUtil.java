@@ -1,14 +1,19 @@
 package util;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.json.JSONObject;
 
-import entity.UserGCPComputeResponse;
-import entity.UserGCPDBResponse;
 import entity.aws.UserAWSComputeLoadBalancerDetails;
 import entity.aws.UserAWSComputeResponse;
 import entity.aws.UserAWSDBRequest;
 import entity.aws.UserAWSDeploymentRequest;
 import entity.aws.UserAWSS3Request;
+import entity.azure.UserAzureComputeResponse;
+import entity.azure.UserAzureDBResponse;
+import entity.gcp.UserGCPComputeResponse;
+import entity.gcp.UserGCPDBResponse;
 
 public class JSONUtil {
 	public static JSONObject AWSComputeResponseToJSON(UserAWSComputeResponse awsComputeResponseInfo){	
@@ -20,10 +25,19 @@ public class JSONUtil {
 			json.accumulate("INSTANCE_STATE", awsComputeResponseInfo.getInstanceState());
 			json.accumulate("INSTANCE_LAUNCH_TIME", awsComputeResponseInfo.getInstanceLaunchTime());
 			json.accumulate("INSTANCE_IP", awsComputeResponseInfo.getInstanceIP());
+			json.accumulate("INSTANCE_ID", awsComputeResponseInfo.getInstanceID());
 		}
 		return json;
-	}
-	
+	}	
+	public static JSONObject AzureComputeResponseToJSON(UserAzureComputeResponse azureComputeResponseInfo){	
+		JSONObject json = new JSONObject();
+		if (azureComputeResponseInfo != null) {
+			json.accumulate("REQUEST_ID", azureComputeResponseInfo.getRequestId());
+			json.accumulate("USER_ID", azureComputeResponseInfo.getUserId());
+			json.accumulate("INSTANCE_IP", azureComputeResponseInfo.getInstanceEndpoint());
+		}
+		return json;
+	}	
 	public static JSONObject GCPComputeResponseToJSON(UserGCPComputeResponse gcpComputeResponseInfo){	
 		JSONObject json = new JSONObject();
 		if (gcpComputeResponseInfo != null) {
@@ -43,7 +57,16 @@ public class JSONUtil {
 		}
 		return json;
 	}
-	
+	public static JSONObject AzureDBResponseToJSON(UserAzureDBResponse azureDBResponseInfo) {
+		JSONObject json = new JSONObject();
+		if (azureDBResponseInfo != null) {
+			json.accumulate("Request_Id", azureDBResponseInfo.getRequestId());
+			json.accumulate("User_Id", azureDBResponseInfo.getUserId());
+			json.accumulate("Database_IP", azureDBResponseInfo.getInstanceEndpoint());
+		}
+		return json;
+	}
+
 	public static JSONObject AWSComputeLoadBalancerToJSON(UserAWSComputeLoadBalancerDetails awsComputeLoadBalancerInfo) {
 		JSONObject json = new JSONObject();
 		if (awsComputeLoadBalancerInfo != null) {
@@ -77,6 +100,7 @@ public class JSONUtil {
 			json.accumulate("INSTANCE_STATE", awsComputeResponseInfo.getInstanceState());
 			json.accumulate("INSTANCE_LAUNCH_TIME", awsComputeResponseInfo.getInstanceLaunchTime());
 			json.accumulate("INSTANCE_IP", awsComputeResponseInfo.getInstanceIP());
+			json.accumulate("INSTANCE_ID", awsComputeResponseInfo.getInstanceID());
 			json.accumulate("ELBIdentifier", awsComputeResponseInfo.getLoadbalancer().getElbIdentifier());
 			json.accumulate("ELBEndpoint", awsComputeResponseInfo.getLoadbalancer().getElbEndpoint());
 		}
@@ -104,5 +128,54 @@ public class JSONUtil {
 		}
 		return json;
 	}
+
+	public static JSONObject userGCPComputeDetailsToJSON(UserGCPComputeResponse gcpComputeResponseInfo) {
+		JSONObject json = new JSONObject();
+		if (gcpComputeResponseInfo != null) {
+			json.accumulate("REQUEST_ID", gcpComputeResponseInfo.getRequestId());
+			json.accumulate("USER_ID", gcpComputeResponseInfo.getUserId());
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+			LocalDateTime now = LocalDateTime.now();
+			json.accumulate("INSTANCE_STATE", "Running");
+			json.accumulate("INSTANCE_LAUNCH_TIME", dtf.format(now));
+			json.accumulate("INSTANCE_IP", gcpComputeResponseInfo.getInstanceEndpoint());
+		}
+		return json;
+	}
+	
+	public static JSONObject userGCPDBRequestDetailsToJSON(UserGCPDBResponse gcpDBResponseInfo) {
+		JSONObject json = new JSONObject();
+		if (gcpDBResponseInfo != null) {
+			json.accumulate("REQUEST_ID", gcpDBResponseInfo.getRequestId());
+			json.accumulate("USER_ID", gcpDBResponseInfo.getUserId());
+			json.accumulate("DB_ENDPOINT", gcpDBResponseInfo.getInstanceEndpoint());
+		}
+		return json;
+	} 
+	
+	public static JSONObject userAzureomputeDetailsToJSON(UserAzureComputeResponse azureComputeResponseInfo) {
+		JSONObject json = new JSONObject();
+		if (azureComputeResponseInfo != null) {
+			json.accumulate("REQUEST_ID", azureComputeResponseInfo.getRequestId());
+			json.accumulate("USER_ID", azureComputeResponseInfo.getUserId());
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+			LocalDateTime now = LocalDateTime.now();
+			json.accumulate("INSTANCE_STATE", "Running");
+			json.accumulate("INSTANCE_LAUNCH_TIME", dtf.format(now));
+			json.accumulate("INSTANCE_IP", azureComputeResponseInfo.getInstanceEndpoint());
+		}
+		return json;
+	}
+	
+	public static JSONObject userAzureDBRequestDetailsToJSON(UserAzureDBResponse azureDBResponseInfo) {
+		JSONObject json = new JSONObject();
+		if (azureDBResponseInfo != null) {
+			json.accumulate("REQUEST_ID", azureDBResponseInfo.getRequestId());
+			json.accumulate("USER_ID", azureDBResponseInfo.getUserId());
+			json.accumulate("DB_ENDPOINT", azureDBResponseInfo.getInstanceEndpoint());
+		}
+		return json;
+	} 
+	
 }
 
