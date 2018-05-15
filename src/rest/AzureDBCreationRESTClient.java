@@ -16,7 +16,7 @@ import entity.azure.UserAzureDBResponse;
 
 public class AzureDBCreationRESTClient {
 	public UserAzureDBResponse ClientGetCall(int userId,int requestId, String dbInstanceName, String masterUsername, String masterPassword, String dbType) throws Exception {
-		URI uri = new URI("http", "//34.217.134.45:8080/CloudCaptain/MicrosoftDB/create/" + userId + "/" + requestId + "/"
+		URI uri = new URI("http", "//34.217.134.45:8080/CloudCaptain/MicrosoftDataBase/create/" + userId + "/" + requestId + "/"
 				+ dbInstanceName + "/" + masterUsername   + "/" + masterPassword + "/" + dbType, null);
 
 		URL url = uri.toURL();
@@ -41,7 +41,7 @@ public class AzureDBCreationRESTClient {
 			{
 				JSONObject newObject = new JSONObject(output);
 				System.out.println(newObject);;
-				instanceEndpoint = newObject.getString("DatabaseIP");
+				instanceEndpoint = newObject.getString("DataBaseDNS");
 				newAzureResponse = new UserAzureDBResponse(requestId, userId,instanceEndpoint);
 				UserAzureDBResponseDao.insert(newAzureResponse);	
 			}
