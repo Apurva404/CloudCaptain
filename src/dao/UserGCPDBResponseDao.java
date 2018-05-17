@@ -95,4 +95,38 @@ public class UserGCPDBResponseDao {
 		System.out.println(sql.toString());
 		return sql.toString();
 	}
+	
+	public static boolean delete( int userId, String instanceEndpoint) {
+		boolean result = false;
+		DBManager manager = DBManager.get();
+		if(manager != null) {
+			Statement statement = manager.getStatement();
+			if (statement != null) {
+				try {
+					int rowsUpdated = statement.executeUpdate(generateSQLForDeleteGCPDb(userId, instanceEndpoint));
+					if(rowsUpdated > 0) {
+						result = true;
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} finally {
+					manager.cleanupStatement(statement);
+				}
+			}
+		}
+		return result;
+	}
+	
+	private static String generateSQLForDeleteGCPDb(int userId, String instanceEndpoint) {
+		StringBuilder sql = new StringBuilder("DELETE FROM ");
+		sql.append(UserGCPDBResponseTable.getTableName());
+		sql.append(" WHERE ");
+		sql.append(UserGCPDBResponseTable.USER_ID.getColumnName());
+		sql.append("=" + userId);	
+		sql.append(" AND ");
+		sql.append(UserGCPDBResponseTable.INSTANCE_ENDPOINT.getColumnName());
+		sql.append(" = " + "'" + instanceEndpoint + "'");
+		System.out.println(sql.toString());
+		return sql.toString();
+	}
 }

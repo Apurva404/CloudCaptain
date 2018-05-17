@@ -95,4 +95,40 @@ public class UserAWSS3RequestDao {
 		return sql.toString();
 	}
 
+	public static boolean delete( int userId, String deploymentName, String bucketName) {
+		boolean result = false;
+		DBManager manager = DBManager.get();
+		if(manager != null) {
+			Statement statement = manager.getStatement();
+			if (statement != null) {
+				try {
+					int rowsUpdated = statement.executeUpdate(generateSQLForDeleteS3(userId, deploymentName, bucketName));
+					if(rowsUpdated > 0) {
+						result = true;
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} finally {
+					manager.cleanupStatement(statement);
+				}
+			}
+		}
+		return result;
+	}
+	
+	private static String generateSQLForDeleteS3(int userId, String deploymentName, String bucketName) {
+		StringBuilder sql = new StringBuilder("DELETE FROM ");
+		sql.append(UserAWSS3RequestTable.getTableName());
+		sql.append(" WHERE ");
+		sql.append(UserAWSS3RequestTable.USER_ID.getColumnName());
+		sql.append("=" + userId);	
+		sql.append(" AND ");
+		sql.append(UserAWSS3RequestTable.DEPLOYEMENT_ID.getColumnName());
+		sql.append(" = " + "'" + deploymentName + "'");
+		sql.append(" AND ");
+		sql.append(UserAWSS3RequestTable.BUCKET_NAME.getColumnName());
+		sql.append(" = " + "'" + bucketName + "'");
+		System.out.println(sql.toString());
+		return sql.toString();
+	}
 }

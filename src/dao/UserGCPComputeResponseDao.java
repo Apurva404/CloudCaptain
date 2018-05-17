@@ -94,4 +94,38 @@ public class UserGCPComputeResponseDao {
 		System.out.println(sql.toString());
 		return sql.toString();
 	}
+	
+	public static boolean delete( int userId, String instanceIP) {
+		boolean result = false;
+		DBManager manager = DBManager.get();
+		if(manager != null) {
+			Statement statement = manager.getStatement();
+			if (statement != null) {
+				try {
+					int rowsUpdated = statement.executeUpdate(generateSQLForDeleteGCPCompute(userId, instanceIP));
+					if(rowsUpdated > 0) {
+						result = true;
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} finally {
+					manager.cleanupStatement(statement);
+				}
+			}
+		}
+		return result;
+	}
+	
+	private static String generateSQLForDeleteGCPCompute(int userId, String instanceIP) {
+		StringBuilder sql = new StringBuilder("DELETE FROM ");
+		sql.append(UserGCPComputeResponseTable.getTableName());
+		sql.append(" WHERE ");
+		sql.append(UserGCPComputeResponseTable.USER_ID.getColumnName());
+		sql.append("=" + userId);	
+		sql.append(" AND ");
+		sql.append(UserGCPComputeResponseTable.INSTANCE_IP.getColumnName());
+		sql.append(" = " + "'" + instanceIP + "'" + ";");
+		System.out.println(sql.toString());
+		return sql.toString();
+	}
 }

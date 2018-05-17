@@ -95,5 +95,38 @@ public class UserAzureDBResponseDao {
 		System.out.println(sql.toString());
 		return sql.toString();
 	}
-
+	
+	public static boolean delete( int userId, String instanceEndpoint) {
+		boolean result = false;
+		DBManager manager = DBManager.get();
+		if(manager != null) {
+			Statement statement = manager.getStatement();
+			if (statement != null) {
+				try {
+					int rowsUpdated = statement.executeUpdate(generateSQLForDeleteAzureDb(userId, instanceEndpoint));
+					if(rowsUpdated > 0) {
+						result = true;
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} finally {
+					manager.cleanupStatement(statement);
+				}
+			}
+		}
+		return result;
+	}
+	
+	private static String generateSQLForDeleteAzureDb(int userId, String instanceEndpoint) {
+		StringBuilder sql = new StringBuilder("DELETE FROM ");
+		sql.append(UserAzureDBResponseTable.getTableName());
+		sql.append(" WHERE ");
+		sql.append(UserAzureDBResponseTable.USER_ID.getColumnName());
+		sql.append("=" + userId);	
+		sql.append(" AND ");
+		sql.append(UserAzureDBResponseTable.INSTANCE_ENDPOINT.getColumnName());
+		sql.append(" = " + "'" + instanceEndpoint + "'");
+		System.out.println(sql.toString());
+		return sql.toString();
+	}
 }

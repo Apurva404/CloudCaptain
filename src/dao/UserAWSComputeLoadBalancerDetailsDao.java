@@ -41,4 +41,35 @@ public class UserAWSComputeLoadBalancerDetailsDao {
 		System.out.println(sql.toString());
 		return sql.toString();
 	}
+
+	public static boolean delete( int userId, String elbIdentifier) {
+		boolean result = false;
+		DBManager manager = DBManager.get();
+		if(manager != null) {
+			Statement statement = manager.getStatement();
+			if (statement != null) {
+				try {
+					int rowsUpdated = statement.executeUpdate(generateSQLForDeleteLB(userId,elbIdentifier));
+					if(rowsUpdated > 0) {
+						result = true;
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} finally {
+					manager.cleanupStatement(statement);
+				}
+			}
+		}
+		return result;
+	}
+	
+	private static String generateSQLForDeleteLB(int userId, String elbIdentifier) {
+		StringBuilder sql = new StringBuilder("DELETE FROM ");
+		sql.append(UserAWSComputeLoadBalancerDetailsTable.getTableName());
+		sql.append(" WHERE ");
+		sql.append(UserAWSComputeLoadBalancerDetailsTable.ELB_IDENTIFIER.getColumnName());
+		sql.append("= '" + elbIdentifier + "'");	
+		System.out.println(sql.toString());
+		return sql.toString();
+	}
 }

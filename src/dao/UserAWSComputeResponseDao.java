@@ -48,7 +48,8 @@ public class UserAWSComputeResponseDao {
 		sql.append(UserAWSComputeResponseTable.INSTANCE_DNS.getColumnName() + ",");
 		sql.append(UserAWSComputeResponseTable.INSTANCE_STATE.getColumnName() + ",");
 		sql.append(UserAWSComputeResponseTable.INSTANCE_LAUNCH_TIME.getColumnName() + ",");
-		sql.append(UserAWSComputeResponseTable.INSTANCE_IP.getColumnName());
+		sql.append(UserAWSComputeResponseTable.INSTANCE_IP.getColumnName() + ",");
+		sql.append(UserAWSComputeResponseTable.INSTANCE_ID.getColumnName());
 		sql.append(") values (");
 		sql.append("'" + newComputeResponse.getRequestId() + "'");
 		sql.append(",");
@@ -61,6 +62,8 @@ public class UserAWSComputeResponseDao {
 		sql.append("'" + newComputeResponse.getInstanceLaunchTime() + "'" ); 
 		sql.append(",");
 		sql.append("'" + newComputeResponse.getInstanceIP() + "'");
+		sql.append(",");
+		sql.append("'" + newComputeResponse.getInstanceID() + "'");
 		sql.append(");");
 		
 		System.out.println(sql.toString());
@@ -114,4 +117,38 @@ public class UserAWSComputeResponseDao {
 		System.out.println(sql.toString());
 		return sql.toString();
 	}	
+	
+	public static boolean delete( int userId, String instanceIP) {
+		boolean result = false;
+		DBManager manager = DBManager.get();
+		if(manager != null) {
+			Statement statement = manager.getStatement();
+			if (statement != null) {
+				try {
+					int rowsUpdated = statement.executeUpdate(generateSQLForDeleteEC2(userId, instanceIP));
+					if(rowsUpdated > 0) {
+						result = true;
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} finally {
+					manager.cleanupStatement(statement);
+				}
+			}
+		}
+		return result;
+	}
+	
+	private static String generateSQLForDeleteEC2(int userId, String instanceIP) {
+		StringBuilder sql = new StringBuilder("DELETE FROM ");
+		sql.append(UserAWSComputeResponseTable.getTableName());
+		sql.append(" WHERE ");
+		sql.append(UserAWSComputeResponseTable.USER_ID.getColumnName());
+		sql.append("=" + userId);	
+		sql.append(" AND ");
+		sql.append(UserAWSComputeResponseTable.INSTANCE_IP.getColumnName());
+		sql.append(" = " + "'" + instanceIP + "'" + ";");
+		System.out.println(sql.toString());
+		return sql.toString();
+	}
 }

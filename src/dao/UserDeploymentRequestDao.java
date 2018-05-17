@@ -80,4 +80,44 @@ public class UserDeploymentRequestDao {
 		System.out.println(sql.toString());
 		return sql.toString();
 	}
+	
+	public static ArrayList<UserAWSDeploymentRequest> getUserDeploymentNameByCloudType(int user_id, String cloudTypeIn) {
+		ArrayList<UserAWSDeploymentRequest> deploymentNameDBFromDBList = new ArrayList<UserAWSDeploymentRequest>();
+		DBManager manager = DBManager.get();
+		if(manager != null) {
+			Statement statement = manager.getStatement();
+			if (statement != null) {
+				try {
+					ResultSet rs = statement.executeQuery(generateSQLForSelectUserDeploymentNameByCloudType(user_id, cloudTypeIn));
+					while(rs.next()) {
+						String deploymentName = rs.getString(UserDeploymentRequestTable.DEPLOYMENT_NAME.getColumnName());
+						String  cloudType= rs.getString(UserDeploymentRequestTable.CLOUD_TYPE.getColumnName());
+						int userId =rs.getInt(UserDeploymentRequestTable.USER_ID.getColumnName());
+					
+						UserAWSDeploymentRequest item = new  UserAWSDeploymentRequest(deploymentName,cloudType ,userId);
+						deploymentNameDBFromDBList.add(item);
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} finally {
+					manager.cleanupStatement(statement);
+				}
+			}
+		}
+		return deploymentNameDBFromDBList;
+	}
+
+	private static String generateSQLForSelectUserDeploymentNameByCloudType(int userId, String cloudType) {
+		StringBuilder sql = new StringBuilder("SELECT * FROM ");
+		sql.append(UserDeploymentRequestTable.getTableName());
+		sql.append(" WHERE ");
+		sql.append(UserDeploymentRequestTable.USER_ID.getColumnName());
+		sql.append("=" + userId);	
+		sql.append(" AND ");
+		sql.append(UserDeploymentRequestTable.CLOUD_TYPE.getColumnName());
+		sql.append("= '" + cloudType + "' ;");
+		System.out.println(sql.toString());
+		return sql.toString();
+	}
 }
+

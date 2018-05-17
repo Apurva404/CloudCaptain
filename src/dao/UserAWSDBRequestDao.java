@@ -112,4 +112,41 @@ public class UserAWSDBRequestDao {
 		System.out.println(sql.toString());
 		return sql.toString();
 	}	
+	
+	public static boolean delete( int userId, String deploymentName, String dbInstanceName) {
+		boolean result = false;
+		DBManager manager = DBManager.get();
+		if(manager != null) {
+			Statement statement = manager.getStatement();
+			if (statement != null) {
+				try {
+					int rowsUpdated = statement.executeUpdate(generateSQLForDeleteRDS(userId, deploymentName, dbInstanceName));
+					if(rowsUpdated > 0) {
+						result = true;
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} finally {
+					manager.cleanupStatement(statement);
+				}
+			}
+		}
+		return result;
+	}
+	
+	private static String generateSQLForDeleteRDS(int userId, String deploymentName, String dbInstanceName) {
+		StringBuilder sql = new StringBuilder("DELETE FROM ");
+		sql.append(UserAWSDBRequestTable.getTableName());
+		sql.append(" WHERE ");
+		sql.append(UserAWSDBRequestTable.USER_ID.getColumnName());
+		sql.append("=" + userId);	
+		sql.append(" AND ");
+		sql.append(UserAWSDBRequestTable.DEPLOYEMENT_ID.getColumnName());
+		sql.append(" = " + "'" + deploymentName + "'");
+		sql.append(" AND ");
+		sql.append(UserAWSDBRequestTable.DB_INSTANCE_NAME.getColumnName());
+		sql.append(" = " + "'" + dbInstanceName + "'" + ";");
+		System.out.println(sql.toString());
+		return sql.toString();
+	}
 }

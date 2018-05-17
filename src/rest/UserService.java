@@ -228,22 +228,6 @@ public class UserService {
 		return Response.ok(responseBody.toString()).build();
 	}
 	
-//	@GET
-//	@Produces("application/json")
-//	@Path("DeploymentDetails/{user_id}/{deploymentName}")
-//	public Response getAssociatedDeploymentDetails(@PathParam("user_id") int User_Id, @PathParam("deploymentName") String deploymentName) {
-//		ArrayList<UserAWSDBRequest> rdsInstanceList = UserAWSDBRequestDao.getUserRDSDetails(User_Id, deploymentName);
-//		ArrayList<UserAWSComputeResponse> ec2InstanceList = UserAWSComputeResponseDao.getUserEc2Details(User_Id, deploymentName);
-//		ArrayList<UserAWSS3Request> S3BucketList = UserAWSS3RequestDao.getUserS3Details(User_Id, deploymentName);
-//		ArrayList<UserGCPDBResponse> gcpDBInstanceList = UserGCPDBResponseDao.getUserGcpDBDetails(User_Id, deploymentName);
-//		ArrayList<UserGCPComputeResponse> gcpComputeInstanceList = UserGCPComputeResponseDao.getUserGCPInstnaceDetails(User_Id, deploymentName);
-//		
-//		JSONArray responseBody = new JSONArray();
-//		for(UserGCPDBResponse item: gcpDBInstanceList) {
-//			responseBody.put(JSONUtil.userGCPDBRequestDetailsToJSON(item));
-//		}
-//		return Response.ok(responseBody.toString()).build();
-//	}
 	@GET
 	@Produces("application/json")
 	@Path("Deployments/{user_id}")
@@ -255,6 +239,29 @@ public class UserService {
 		}
 		return Response.ok(responseBody.toString()).build();
 	}	
+	
+	@GET
+	@Produces("application/json")
+	@Path("DeploymentsName")
+	public Response getAllDeploymentName() {
+		ArrayList<String> deploymentNameList = UserDao.getAllDeploymentName();
+		
+		JSONObject responseBody = new JSONObject();
+		responseBody.put("DeploymentNames", deploymentNameList);
+		return Response.ok(responseBody.toString()).build();
+	}	
+	
+	@GET
+	@Produces("application/json")
+	@Path("Deployments/{user_id}/{cloud_type}")
+	public Response getAssociatedDeploymentForACloudType(@PathParam("user_id") int User_Id, @PathParam("cloud_type") String cloudType) {
+		ArrayList<UserAWSDeploymentRequest> deploymentList = UserDeploymentRequestDao.getUserDeploymentNameByCloudType(User_Id, cloudType);
+		JSONArray responseBody = new JSONArray();
+		for(UserAWSDeploymentRequest item:deploymentList ) {
+			responseBody.put(JSONUtil.userDeploymentNameToJSON(item));
+		}
+		return Response.ok(responseBody.toString()).build();
+	}
 }
 
 	

@@ -2,8 +2,11 @@ package dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+
 import constants.EntityConstants;
 import db.DBManager;
+import table.UserDeploymentRequestTable;
 import table.UserTable;
 import entity.User;
 
@@ -93,5 +96,33 @@ public class UserDao {
 		
 		System.out.println(sql.toString());
 		return sql.toString();
+	}
+	
+	public static ArrayList<String> getAllDeploymentName(){
+		ArrayList<String> deploymentRequestNamelist = new ArrayList<String>();
+		StringBuilder sql = new StringBuilder("SELECT " + UserDeploymentRequestTable.DEPLOYMENT_NAME.getColumnName() + " FROM ");
+		sql.append(UserDeploymentRequestTable.getTableName());
+		sql.append(";");
+		System.out.println(sql.toString());
+		DBManager manager = DBManager.get();
+		if(manager != null) {
+			Statement statement = manager.getStatement();
+			if (statement != null) {
+				try {
+					ResultSet rs = statement.executeQuery(sql.toString());
+					while(rs.next()) {
+						
+						String item = rs.getString(UserDeploymentRequestTable.DEPLOYMENT_NAME.getColumnName());
+						deploymentRequestNamelist.add(item);
+					}
+											
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} finally {
+					manager.cleanupStatement(statement);
+				}
+			}
+		}
+		return deploymentRequestNamelist;	
 	}
 }
